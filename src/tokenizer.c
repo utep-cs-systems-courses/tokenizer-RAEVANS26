@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "tokenizer.h"
-#include "malloc.h"
+//#include "malloc.h"
+#include <stdlib.h>
 
 int space_char(char c)
 {
@@ -16,10 +17,9 @@ int non_space_char(char c)
         return 0;   
     }
     return 1;
-    //Pretty much the opposite of space_char
 }
 
-char *word_start(char *word)
+char *word_start(char *word)//moves pointer to the first char in the word
 {
     int i=0;
     while(*(word + i))
@@ -33,7 +33,7 @@ char *word_start(char *word)
     return word + i;
 }
 
-char *word_terminator(char *word)
+char *word_terminator(char *word)//moves the pointer to the space character right after the last char in the word 
 {
     int i=0;
     while(*(word + i))
@@ -47,9 +47,8 @@ char *word_terminator(char *word)
     return word + i;
 }
 
-int count_words(char *str)
+int count_words(char *str)//returns a count of all the words in the user input string
 {
-    
     char *tmp = str;
     int count = 0;
     int i = 0;//pointer is on the first char in the first word
@@ -67,7 +66,7 @@ int count_words(char *str)
     return count;
 }
 
-char *copy_str(char *inStr, short len)
+char *copy_str(char *inStr, short len)//returns copied string from user input string
 {
     char *copyStr = malloc((len + 1) * sizeof(char));
     int i;
@@ -78,7 +77,7 @@ char *copy_str(char *inStr, short len)
     return copyStr;
 }
 
-int word_length(char *str)
+int word_length(char *str)//returns length of a word 
 {   
     char *tmpS = word_start(str);
     char *tmpE = word_terminator(tmpS);
@@ -88,24 +87,23 @@ int word_length(char *str)
     return length;
 }
 
-char **tokenize(char *str)
+char **tokenize(char *str)//returns double pointer of tokenized string
 {
     int size = count_words(str);
     char **tokens = malloc((size + 1) * sizeof(char *));
     int i;
     int length;
-    char *p = str;
     for(i = 0;i < size;i++){
-        p = word_start(p);
-        length = word_length(p);
-        tokens[i] = copy_str(p, length);
-        p = word_terminator(p);
+        str = word_start(str);
+        length = word_length(str);
+        tokens[i] = copy_str(str, length);
+        str = word_terminator(str);
     }
-    tokens[i] = '\0';
+    tokens[i] = '\0';//ends with terminator so it will be easier to print
     return tokens;
 }
 
-void print_tokens(char **tokens)
+void print_tokens(char **tokens)//prints tokens from double pointer of tokenized string
 {
     int i=0;
     while (tokens[i]){
@@ -114,7 +112,7 @@ void print_tokens(char **tokens)
     }
 }
 
-void free_tokens(char **tokens)
+void free_tokens(char **tokens)//clears tokens to free memory
 {
     int i = 0;
     while(tokens[i]){
